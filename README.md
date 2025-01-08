@@ -1,37 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AnyLangPod 🎧🌍
 
-## Getting Started
+AnyLangPod is an AI-powered educational platform that transforms global news into personalized language learning podcasts. By leveraging GDELT data and advanced AI technologies, it creates engaging audio content tailored to different language proficiency levels.
 
-First, run the development server:
+## Features 🚀
+
+- **Personalized News Selection**: Users can choose topics that interest them
+- **Multi-Level Content**: Supports different language proficiency levels (Beginner/Intermediate/Advanced)
+- **AI-Powered Summaries**: Intelligent content summarization and simplification
+- **Real-Time Updates**: Fresh content from GDELT global news database
+- **Professional Audio**: High-quality text-to-speech podcast generation
+- **Learning Tools**: Vocabulary highlighting and contextual explanations
+
+## Tech Stack 💻
+
+- **Frontend**: Next.js
+- **Backend**: FastAPI
+- **AI/ML**: 
+  - LLM for content summarization
+  - Text-to-Speech for audio generation
+- **Data Source**: GDELT API
+- **Database**: TBD
+
+## Getting Started 🌟
+
+### Prerequisites
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Clone the repository
+git clone https://github.com/hroyhong/anylanpod.git
+
+# Navigate to the project directory
+cd anylanpod
+
+# Install dependencies
+npm install  # for frontend
+pip install -r requirements.txt  # for backend
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+[Setup instructions coming soon]
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure 📁
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+anylanpod/
+├── frontend/          # Next.js frontend
+│   ├── components/    # React components
+│   ├── pages/         # Next.js pages
+│   └── styles/        # CSS styles
+├── backend/           # FastAPI backend
+│   ├── api/          # API routes
+│   ├── services/     # Business logic
+│   └── models/       # Data models
+└── docs/             # Documentation
+```
 
-## Learn More
+## API Documentation 📚
 
-To learn more about Next.js, take a look at the following resources:
+### Main Endpoints
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `POST /api/generate-podcast`
+  - Generate a new podcast from selected topics
+- `GET /api/topics`
+  - Fetch available news topics
+- `GET /api/levels`
+  - Get available language proficiency levels
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+[Full API documentation coming soon]
 
-## Deploy on Vercel
+## Contributing 🤝
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# anylanpod
+## License 📄
+
+MIT License - feel free to use, modify, and distribute!
+
+## Contact 📧
+
+Twitter: https://x.com/HroyhongHong
+
+Project Link: https://github.com/hroyhong/anylanpod
+
+---
+Made with ❤️ for language learners worldwide
