@@ -2,23 +2,17 @@
 
 import React from "react";
 import { Header } from "@/components/header";
-import { Hero } from "@/components/hero";
+import { KeywordSection } from "@/components/keyword-input";
 import { Features } from "@/components/features";
-import { Benefits } from "@/components/benefits";
-import { Pricing } from "@/components/pricing";
-import { CTA } from "@/components/cta";
 import { Footer } from "@/components/footer";
 
-export default function Home() {
+export default function CreatePage() {
   return (
     <main className="min-h-screen">
       <Header />
-      <Hero />
+      <KeywordSection />
       <Features />
-      <Benefits />
-      <Pricing />
-      <CTA />
       <Footer />
     </main>
   );
-}
+} 
