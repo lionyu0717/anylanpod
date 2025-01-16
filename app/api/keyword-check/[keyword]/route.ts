@@ -2,14 +2,12 @@ import { NextResponse } from 'next/server';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export async function GET(request: Request) {
+export async function GET(
+  request: Request,
+  { params }: { params: { keyword: string } }
+) {
   try {
-    const { searchParams } = new URL(request.url);
-    const keyword = searchParams.get('keyword');
-
-    if (!keyword) {
-      return NextResponse.json({ error: 'Keyword parameter is required' }, { status: 400 });
-    }
+    const keyword = params.keyword;
 
     if (!API_URL) {
       return NextResponse.json({ error: 'API URL is not configured' }, { status: 500 });
@@ -32,11 +30,7 @@ export async function GET(request: Request) {
     }
 
     const data = await response.json();
-    return NextResponse.json({
-      keyword: data.keyword,
-      timespan: data.timespan,
-      found: data.found
-    });
+    return NextResponse.json(data);
 
   } catch (error) {
     console.error('Check keyword API error:', error);
@@ -45,14 +39,4 @@ export async function GET(request: Request) {
       { status: 500 }
     );
   }
-}
-
-export async function OPTIONS() {
-  return NextResponse.json({}, {
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    },
-  });
 } 

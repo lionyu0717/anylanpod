@@ -5,25 +5,105 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { X } from "lucide-react";
 
+interface PodcastResponse {
+  keyword: string;
+  timespan: string;
+  urls: string[];
+  script: {
+    title: string;
+    content: string;
+  };
+  success: boolean;
+  tts: {
+    local_path: string;
+    s3_url: string;
+    cached: boolean;
+  };
+}
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export function KeywordSection() {
   const [keywords, setKeywords] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isChecking, setIsChecking] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState("");
+  const [podcast, setPodcast] = useState<PodcastResponse | null>(null);
+
+  const validateKeyword = (term: string) => {
+    // Check if the keyword is at least 2 characters
+    if (term.length < 2) {
+      throw new Error('Keyword must be at least 2 characters long');
+    }
+    // Check if it's not just numbers or special characters
+    if (!/[a-zA-Z]/.test(term)) {
+      throw new Error('Keyword must contain at least one letter');
+    }
+  };
 
   const checkKeyword = async (term: string) => {
     try {
-      const response = await fetch(`/api/keyword-check?query=${encodeURIComponent(term)}`);
+      validateKeyword(term);
+
+      const response = await fetch(
+        `/api/keyword-check/${encodeURIComponent(term)}`,
+        {
+          method: 'GET',
+          headers: {
+            'accept': 'application/json',
+          },
+        }
+      );
+      
       const data = await response.json();
       
       if (!response.ok) {
         throw new Error(data.error || 'Failed to check keyword');
       }
 
-      return data.exists;
+      if (!data.found) {
+        throw new Error(`No recent news found for "${data.keyword}" in the past ${data.timespan}. Try a different keyword.`);
+      }
+
+      return true;
     } catch (err) {
       console.error("Error checking keyword:", err);
+      throw err;
+    }
+  };
+
+  const generatePodcast = async (terms: string[]) => {
+    try {
+      const query = terms.join(' OR ');
+      const response = await fetch(
+        `/api/search?query=${encodeURIComponent(query)}`,
+        {
+          method: 'POST',
+          headers: {
+            'accept': 'application/json',
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            timespan: '1d',
+            difficulty: 'easy',
+            language: 'English',
+            generate_tts: true,
+            voice_name: 'en-US-Standard-C',
+            voice_gender: 'FEMALE'
+          })
+        }
+      );
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to generate podcast');
+      }
+
+      return data;
+    } catch (err) {
+      console.error("Error generating podcast:", err);
       throw err;
     }
   };
@@ -44,18 +124,12 @@ export function KeywordSection() {
       if (exists) {
         setKeywords([...keywords, term]);
         setInputValue("");
-      } else {
-        setError(`Nothing new about "${term}" in the past 24 hours. Try a different term or check your spelling.`);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to check keyword. Please try again.");
     } finally {
       setIsChecking(false);
     }
-  };
-
-  const removeKeyword = (keywordToRemove: string) => {
-    setKeywords(keywords.filter(keyword => keyword !== keywordToRemove));
   };
 
   const handleGeneratePodcast = async () => {
@@ -65,12 +139,19 @@ export function KeywordSection() {
     setError("");
 
     try {
-      // TODO: Implement podcast generation
-      console.log("Generating podcast with keywords:", keywords);
+      const podcastData = await generatePodcast(keywords);
+      setPodcast(podcastData);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to generate podcast. Please try again.");
     } finally {
       setIsGenerating(false);
+    }
+  };
+
+  const removeKeyword = (keywordToRemove: string) => {
+    setKeywords(keywords.filter(keyword => keyword !== keywordToRemove));
+    if (keywords.length <= 1) {
+      setPodcast(null);
     }
   };
 
@@ -80,10 +161,10 @@ export function KeywordSection() {
         <div className="mx-auto max-w-2xl space-y-6">
           <div className="text-center space-y-2">
             <h2 className="text-3xl font-bold tracking-tighter">Choose Your Topics</h2>
-            <p className="text-gray-500">
+            <p className="text-muted-foreground">
               Add keywords or phrases to find recent news for your podcast
             </p>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-muted-foreground/80">
               Keywords are checked against news from the last 24 hours
             </p>
           </div>
@@ -136,6 +217,24 @@ export function KeywordSection() {
               >
                 {isGenerating ? "Generating Podcast..." : "Generate Podcast"}
               </Button>
+
+              {podcast && (
+                <div className="space-y-4 bg-card p-6 rounded-lg border">
+                  <h3 className="text-xl font-bold">{podcast.script.title}</h3>
+                  <div className="mt-4">
+                    <audio controls className="w-full">
+                      <source src={podcast.tts.s3_url} type="audio/mpeg" />
+                      Your browser does not support the audio element.
+                    </audio>
+                  </div>
+                  <p className="text-muted-foreground whitespace-pre-line">
+                    {podcast.script.content}
+                  </p>
+                  <div className="text-sm text-muted-foreground">
+                    Based on {podcast.urls.length} articles • Generated {new Date().toLocaleDateString()}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
