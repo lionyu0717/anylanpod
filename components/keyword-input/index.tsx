@@ -22,7 +22,6 @@ interface PodcastResponse {
     success?: boolean;
   };
 }
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export function KeywordSection() {
   const [keywords, setKeywords] = useState<string[]>([]);

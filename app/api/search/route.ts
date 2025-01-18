@@ -1,6 +1,4 @@
 import { NextResponse } from 'next/server';
-import { createTTSRecord } from '@/models/tts-record';
-import { TTSRecord } from '@/types/database';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 

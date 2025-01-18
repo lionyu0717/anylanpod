@@ -3,11 +3,8 @@ import { Metadata, ResolvingMetadata } from 'next';
 import Link from 'next/link';
 import slugify from 'slugify';
 import { format, isValid, parseISO } from 'date-fns';
-import { TTSRecord } from '@/types/database';
 import { getTTSRecordById } from '@/models/tts-record';
 import { Header } from '@/components/header';
-import { Button } from '@/components/ui/button';
-import { Share2 } from 'lucide-react';
 import { PodcastContent } from './PodcastContent';
 
 interface Props {
