@@ -118,7 +118,7 @@ export function PodcastContent({ podcast }: PodcastContentProps) {
           onClick={() => setShowOriginal(!showOriginal)}
           variant="outline"
         >
-          {showOriginal ? 'Hide Original' : 'Show Original'}
+          {showOriginal ? 'Hide Text' : 'Show Text'}
         </Button>
         
         {translation ? (
@@ -126,7 +126,7 @@ export function PodcastContent({ podcast }: PodcastContentProps) {
             onClick={() => setShowTranslation(!showTranslation)}
             variant="outline"
           >
-            {showTranslation ? 'Hide Translation' : 'Show Translation'}
+            {showTranslation ? 'Hide Explanation' : 'Show Explanation'}
           </Button>
         ) : (
           <Button 
