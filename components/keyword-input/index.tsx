@@ -15,12 +15,13 @@ interface PodcastResponse {
   };
   success: boolean;
   tts: {
-    local_path: string;
-    s3_url: string;
-    cached: boolean;
+    local_path?: string;
+    s3_url?: string;
+    cached?: boolean;
+    error?: string;
+    success?: boolean;
   };
 }
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export function KeywordSection() {
@@ -87,9 +88,9 @@ export function KeywordSection() {
           body: JSON.stringify({
             timespan: '1d',
             difficulty: 'easy',
-            language: 'en-US',
+            language: 'en-GB',  // Changed to match backend default
             generate_tts: true,
-            voice_name: 'en-US-Standard-C',
+            voice_name: 'Wise_Woman',  // Changed to match backend service
             voice_gender: 'FEMALE'
           })
         }
@@ -229,12 +230,18 @@ export function KeywordSection() {
               {podcast && (
                 <div className="space-y-4 bg-card p-6 rounded-lg border">
                   <h3 className="text-xl font-bold">{podcast.script.title}</h3>
-                  <div className="mt-4">
-                    <audio controls className="w-full">
-                      <source src={podcast.tts.s3_url} type="audio/mpeg" />
-                      Your browser does not support the audio element.
-                    </audio>
-                  </div>
+                  {podcast.tts.success !== false ? (
+                    <div className="mt-4">
+                      <audio controls className="w-full">
+                        <source src={podcast.tts.s3_url} type="audio/mpeg" />
+                        Your browser does not support the audio element.
+                      </audio>
+                    </div>
+                  ) : (
+                    <div className="text-red-500">
+                      Failed to generate audio: {podcast.tts.error}
+                    </div>
+                  )}
                   <p className="text-muted-foreground whitespace-pre-line">
                     {podcast.script.content}
                   </p>
