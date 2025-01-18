@@ -76,7 +76,7 @@ export function PodcastContent({ podcast }: PodcastContentProps) {
       <div className="flex gap-8">
         {/* Original Text Section */}
         {showOriginal && (
-          <div className={`prose prose-lg dark:prose-invert ${showTranslation ? 'w-1/3' : 'w-full'}`}>
+          <div className={`prose prose-lg dark:prose-invert ${showTranslation ? 'w-1/3' : 'max-w-4xl mx-auto'}`}>
             {podcast.script.split('\n').map((paragraph, index) => (
               <p key={`original-${index}`} className="mb-4">{paragraph}</p>
             ))}
@@ -85,7 +85,7 @@ export function PodcastContent({ podcast }: PodcastContentProps) {
 
         {/* Translation Section */}
         {showTranslation && translation && translation.translation && (
-          <div className={`prose prose-lg dark:prose-invert ${showOriginal ? 'w-2/3' : 'w-full'}`}>
+          <div className={`prose prose-lg dark:prose-invert ${showOriginal ? 'w-2/3' : 'max-w-4xl mx-auto'}`}>
             <div className="border-l pl-8">
               {(translation.translation || '').split('\n').map((paragraph, index) => (
                 <p key={`translation-${index}`} className="mb-4">{paragraph}</p>
