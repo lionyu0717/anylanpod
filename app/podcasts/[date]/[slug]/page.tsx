@@ -8,7 +8,7 @@ import { getTTSRecordById } from '@/models/tts-record';
 import { Header } from '@/components/header';
 import { Button } from '@/components/ui/button';
 import { Share2 } from 'lucide-react';
-import AudioPlayer from '../../components/AudioPlayer';
+import { PodcastContent } from './PodcastContent';
 
 interface Props {
   params: { date: string; slug: string }
@@ -113,7 +113,6 @@ export default async function PodcastPage({ params }: Props) {
   }
 
   const title = podcast.script.split('.')[0];
-  // Format the keyword - if it contains 'OR', split and format as a list
   const keywords = podcast.keyword
     .split(/\s+OR\s+/)
     .map(k => k.trim())
@@ -140,15 +139,12 @@ export default async function PodcastPage({ params }: Props) {
 
         {/* Hero section */}
         <div className="border-b">
-          <div className="container mx-auto px-4 py-16 max-w-3xl">
+          <div className="container mx-auto px-4 py-16 max-w-4xl">
             <div className="flex justify-between items-start mb-4">
               <div className="space-y-2">
                 <h1 className="text-5xl font-bold">{title}</h1>
                 <p className="text-lg text-muted-foreground">Topics: {keywords}</p>
               </div>
-              <Button variant="outline" size="icon" title="Share">
-                <Share2 className="h-4 w-4" />
-              </Button>
             </div>
             <div className="flex gap-4 text-lg text-muted-foreground mt-4">
               <span>Language: {podcast.language_code}</span>
@@ -161,28 +157,8 @@ export default async function PodcastPage({ params }: Props) {
         </div>
 
         {/* Content section */}
-        <div className="container mx-auto px-4 py-8 max-w-3xl">
-          <div className="mb-8">
-            <AudioPlayer src={podcast.s3_url} />
-          </div>
-
-          <div className="prose prose-lg dark:prose-invert max-w-none">
-            {podcast.script.split('\n').map((paragraph: string, index: number) => (
-              <p key={index}>{paragraph}</p>
-            ))}
-          </div>
-
-          <div className="mt-8 pt-8 border-t">
-            <h2 className="text-2xl font-semibold mb-4">Voice Details</h2>
-            <dl className="grid grid-cols-2 gap-4">
-              <dt className="text-muted-foreground">Voice Name</dt>
-              <dd>{podcast.voice_name}</dd>
-              <dt className="text-muted-foreground">Voice Gender</dt>
-              <dd className="capitalize">{podcast.voice_gender.toLowerCase()}</dd>
-            </dl>
-          </div>
+        <PodcastContent podcast={podcast} />
         </div>
-      </div>
     </>
   );
-} 
+}

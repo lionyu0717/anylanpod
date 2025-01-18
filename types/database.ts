@@ -1,16 +1,29 @@
 export type DifficultyLevel = 'easy' | 'medium' | 'hard';
 export type VoiceGenderType = 'MALE' | 'FEMALE' | 'NEUTRAL';
 
+export interface TranslationNote {
+  term: string;
+  translation: string;
+  explanation: string;
+}
+
+export interface Translation {
+  translation: string;
+  notes: TranslationNote[];
+}
+
 export interface TTSRecord {
   id: string;
   keyword: string;
   script: string;
   s3_url: string;
   language_code: string;
-  difficulty: DifficultyLevel;
+  difficulty: string;
   voice_name: string;
-  voice_gender: VoiceGenderType;
+  voice_gender: string;
   created_at: string;
+  updated_at?: string;
+  learning_guide?: Translation; // Add this new field
 }
 
 export interface Database {
