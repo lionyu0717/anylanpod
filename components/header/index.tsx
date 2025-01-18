@@ -3,6 +3,13 @@
 import React from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { 
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuItem, 
+  NavigationMenuLink, 
+  navigationMenuTriggerStyle 
+} from "@/components/ui/navigation-menu";
 
 export function Header() {
   return (
@@ -13,11 +20,38 @@ export function Header() {
             <Link href="/" className="flex items-center space-x-2">
               <span className="text-xl font-bold">AnyLangPod</span>
             </Link>
-            <nav className="flex gap-6">
-              <Link href="/" className="nav-link">Home</Link>
-              <Link href="/pricing" className="nav-link">Pricing</Link>
-              <Link href="/create" className="nav-link">Create</Link>
-            </nav>
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <Link href="/" legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      Home
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Link href="/pricing" legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      Pricing
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Link href="/create" legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      Create
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <Link href="/podcasts" legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      Podcasts
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
           </div>
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="sm">Sign In</Button>

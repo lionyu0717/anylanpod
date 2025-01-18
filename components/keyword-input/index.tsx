@@ -87,7 +87,7 @@ export function KeywordSection() {
           body: JSON.stringify({
             timespan: '1d',
             difficulty: 'easy',
-            language: 'English',
+            language: 'en-US',
             generate_tts: true,
             voice_name: 'en-US-Standard-C',
             voice_gender: 'FEMALE'
@@ -95,12 +95,20 @@ export function KeywordSection() {
         }
       );
       
-      const data = await response.json();
-      
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to generate podcast');
+        const errorText = await response.text();
+        console.error('API error response:', errorText);
+        try {
+          // Try to parse error as JSON
+          const errorData = JSON.parse(errorText);
+          throw new Error(errorData.error || 'Failed to generate podcast');
+        } catch (e) {
+          // If parsing fails, use the raw error text
+          throw new Error(`Failed to generate podcast: ${errorText}`);
+        }
       }
 
+      const data = await response.json();
       return data;
     } catch (err) {
       console.error("Error generating podcast:", err);

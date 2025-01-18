@@ -7,7 +7,7 @@ export async function GET(
   { params }: { params: { keyword: string } }
 ) {
   try {
-    const keyword = params.keyword;
+    const { keyword } = await Promise.resolve(params);
 
     if (!API_URL) {
       return NextResponse.json({ error: 'API URL is not configured' }, { status: 500 });
