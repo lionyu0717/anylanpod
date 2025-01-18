@@ -113,6 +113,11 @@ export default async function PodcastPage({ params }: Props) {
   }
 
   const title = podcast.script.split('.')[0];
+  // Format the keyword - if it contains 'OR', split and format as a list
+  const keywords = podcast.keyword
+    .split(/\s+OR\s+/)
+    .map(k => k.trim())
+    .join(', ');
 
   return (
     <>
@@ -137,12 +142,15 @@ export default async function PodcastPage({ params }: Props) {
         <div className="border-b">
           <div className="container mx-auto px-4 py-16 max-w-3xl">
             <div className="flex justify-between items-start mb-4">
-              <h1 className="text-5xl font-bold">{title}</h1>
+              <div className="space-y-2">
+                <h1 className="text-5xl font-bold">{title}</h1>
+                <p className="text-lg text-muted-foreground">Topics: {keywords}</p>
+              </div>
               <Button variant="outline" size="icon" title="Share">
                 <Share2 className="h-4 w-4" />
               </Button>
             </div>
-            <div className="flex gap-4 text-lg text-muted-foreground">
+            <div className="flex gap-4 text-lg text-muted-foreground mt-4">
               <span>Language: {podcast.language_code}</span>
               <span className="capitalize">Difficulty: {podcast.difficulty}</span>
               <time dateTime={podcast.created_at}>

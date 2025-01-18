@@ -35,8 +35,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid language code format' }, { status: 400 });
     }
 
+    // Clean up the query - remove 'OR' and use comma for the API
+    const cleanQuery = query.replace(/\s+OR\s+/g, ',');
+
     const response = await fetch(
-      `${API_URL}/api/script/${encodeURIComponent(query)}?timespan=${body.timespan}&difficulty=${difficulty}&language=${body.language}&generate_tts=true&voice_name=${body.voice_name}&voice_gender=${voiceGender}`,
+      `${API_URL}/api/script/${encodeURIComponent(cleanQuery)}?timespan=${body.timespan}&difficulty=${difficulty}&language=${body.language}&generate_tts=true&voice_name=${body.voice_name}&voice_gender=${voiceGender}`,
       {
         method: 'POST',
         headers: {
@@ -53,23 +56,8 @@ export async function POST(request: Request) {
 
     const data = await response.json();
 
-    // Save to database using our model
-    const record = await createTTSRecord({
-      keyword: query,
-      script: data.script.content,
-      s3_url: data.tts.s3_url,
-      language_code: body.language,
-      difficulty: difficulty,
-      voice_name: body.voice_name,
-      voice_gender: voiceGender,
-    });
-
-    // Return the database record ID along with the API response
-    return NextResponse.json({
-      ...data,
-      id: record.id,
-      created_at: record.created_at
-    });
+    // Return the API response directly without saving to database
+    return NextResponse.json(data);
 
   } catch (error) {
     console.error('Search API error:', error);

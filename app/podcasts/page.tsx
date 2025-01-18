@@ -5,6 +5,7 @@ import { DifficultyLevel, TTSRecord } from '@/types/database';
 import { getTTSRecords, getLanguages } from '@/models/tts-record';
 import { Header } from '@/components/header';
 import PodcastFilters from './components/PodcastFilters';
+import { PlayCircle, Clock, Globe2, BarChart3 } from 'lucide-react';
 
 export const revalidate = 3600; // Revalidate every hour
 
@@ -56,7 +57,7 @@ export default async function PodcastsPage({
       <Header />
       <div className="flex-1">
         {/* Hero section */}
-        <div className="border-b">
+        <div className="border-b bg-gradient-to-b from-background to-muted/20">
           <div className="container mx-auto px-4 py-16">
             <h1 className="text-5xl font-bold mb-4">Latest Podcasts</h1>
             <p className="text-xl text-muted-foreground">
@@ -74,25 +75,58 @@ export default async function PodcastsPage({
           />
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {articles?.map((article) => (
-              <Link 
-                href={generatePodcastUrl(article)}
-                key={article.id}
-                className="block p-6 bg-card rounded-lg border hover:shadow-lg transition-shadow"
-              >
-                <h2 className="text-xl font-semibold mb-2 line-clamp-2">
-                  {article.script.split('.')[0]}
-                </h2>
-                <p className="text-muted-foreground mb-4 line-clamp-3">
-                  {article.script.split('.').slice(1, 3).join('.')}...
-                </p>
-                <div className="flex justify-between items-center text-sm text-muted-foreground">
-                  <span>{article.language_code}</span>
-                  <span className="capitalize">{article.difficulty}</span>
-                  <span>{formatDistanceToNow(new Date(article.created_at))} ago</span>
-                </div>
-              </Link>
-            ))}
+            {articles?.map((article) => {
+              // Format keywords
+              const keywords = article.keyword
+                .split(/\s+OR\s+/)
+                .map(k => k.trim());
+
+              return (
+                <Link 
+                  href={generatePodcastUrl(article)}
+                  key={article.id}
+                  className="group block p-6 bg-card rounded-lg border hover:shadow-lg transition-all hover:border-primary"
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <h2 className="text-xl font-semibold line-clamp-2 group-hover:text-primary transition-colors">
+                      {article.script.split('.')[0]}
+                    </h2>
+                    <PlayCircle className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0 ml-4" />
+                  </div>
+
+                  {/* Keywords */}
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {keywords.map((keyword, index) => (
+                      <span 
+                        key={index}
+                        className="px-2 py-1 bg-primary/10 text-primary text-sm rounded-full"
+                      >
+                        {keyword}
+                      </span>
+                    ))}
+                  </div>
+
+                  <p className="text-muted-foreground mb-4 line-clamp-2">
+                    {article.script.split('.').slice(1, 2).join('.')}...
+                  </p>
+
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <Globe2 className="w-4 h-4" />
+                      <span>{article.language_code}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <BarChart3 className="w-4 h-4" />
+                      <span className="capitalize">{article.difficulty}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Clock className="w-4 h-4" />
+                      <span>{formatDistanceToNow(new Date(article.created_at))} ago</span>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>
